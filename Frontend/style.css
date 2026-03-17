@@ -1,0 +1,98 @@
+body{
+font-family:Arial;
+margin:0;
+background:#f4f4f4;
+}
+
+header{
+background:black;
+color:white;
+padding:20px;
+display:flex;
+gap:10px;
+align-items:center;
+}
+
+#produtos{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:15px;
+border-radius:10px;
+text-align:center;
+}
+
+.card img{
+width:100%;
+height:250px;
+object-fit:cover;
+}
+
+button{
+background:black;
+color:white;
+border:none;
+padding:10px;
+cursor:pointer;
+margin-top:10px;
+}
+
+/* CARRINHO */
+.carrinho{
+position:fixed;
+right:-400px;
+top:0;
+width:350px;
+height:100%;
+background:white;
+box-shadow:-3px 0 10px rgba(0,0,0,0.3);
+padding:20px;
+transition:0.3s;
+overflow:auto;
+}
+
+.carrinho.ativo{
+right:0;
+}
+
+/* BOTÃO FIXO */
+#btnCarrinho{
+position:fixed;
+top:20px;
+right:20px;
+background:black;
+color:white;
+padding:15px;
+border-radius:50px;
+cursor:pointer;
+}
+
+/* ALERTA */
+#alerta{
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+background:green;
+color:white;
+padding:10px 20px;
+display:none;
+}
+
+/* FORM */
+input, select{
+display:block;
+margin:10px;
+padding:10px;
+width:250px;
+}
+
+/* QR CODE */
+#qrcode{
+margin-top:10px;
+}

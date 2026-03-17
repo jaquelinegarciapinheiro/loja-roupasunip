@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Checkout</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1>Finalizar Pedido</h1>
+
+<div id="resumo"></div>
+
+<h2>Dados</h2>
+
+<input id="nome" placeholder="Nome completo">
+<input id="cpf" placeholder="CPF">
+
+<h3>Endereço</h3>
+
+<input id="rua" placeholder="Rua">
+<input id="numero" placeholder="Número">
+<input id="cidade" placeholder="Cidade">
+
+<h3>Pagamento</h3>
+
+<select id="pagamento">
+<option value="pix">PIX</option>
+<option value="cartao">Cartão</option>
+<option value="dinheiro">Dinheiro</option>
+</select>
+
+<div id="pixArea"></div>
+
+<button onclick="finalizar()">Finalizar Pedido</button>
+<button onclick="finalizarWhats()">Finalizar via WhatsApp</button>
+
+<script src="checkout.js"></script>
+
+</body>
+
+</html>

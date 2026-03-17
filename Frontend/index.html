@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Loja Street</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+
+<h1>Loja Street</h1>
+
+<input id="busca" placeholder="Buscar produto">
+
+<select id="categoria">
+<option value="todos">Todas</option>
+<option value="camiseta">Camiseta</option>
+<option value="moletom">Moletom</option>
+<option value="jaqueta">Jaqueta</option>
+<option value="calça">Calça</option>
+</select>
+
+</header>
+
+<!-- BOTÃO CARRINHO -->
+<div id="btnCarrinho" onclick="abrirCarrinho()">
+🛒 <span id="contador">0</span>
+</div>
+
+<div id="produtos"></div>
+
+<!-- CARRINHO -->
+<div id="carrinho" class="carrinho">
+
+<button onclick="abrirCarrinho()">❌</button>
+
+<h2>Seu Carrinho</h2>
+
+<div id="listaCarrinho"></div>
+
+<h3 id="total"></h3>
+
+<button onclick="irCheckout()">Finalizar Pedido</button>
+
+</div>
+
+<!-- ALERTA -->
+<div id="alerta">Produto adicionado!</div>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
