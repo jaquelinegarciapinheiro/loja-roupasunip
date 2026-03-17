@@ -1,91 +1,142 @@
-const produtosDiv = document.getElementById("produtos")
+const API_URL = "https://loja-backend-ias9.onrender.com";
 
-let produtos = []
-let carrinho = JSON.parse(localStorage.getItem("carrinho")) || []
+// ELEMENTOS
+const produtosContainer = document.getElementById("produtos");
+const carrinhoBtn = document.getElementById("carrinho-btn");
+const carrinhoSidebar = document.getElementById("carrinho");
+const fecharCarrinho = document.getElementById("fechar-carrinho");
+const carrinhoItens = document.getElementById("carrinho-itens");
+const totalEl = document.getElementById("total");
+const contadorCarrinho = document.getElementById("contador-carrinho");
 
-fetch("https://loja-backend-ias9.onrender.com/produtos")
-.then(res=>res.json())
-.then(data=>{
-produtos=data
-renderProdutos(data)
-renderCarrinho()
-})
+// CARRINHO
+let carrinho = [];
 
-function renderProdutos(lista){
-produtosDiv.innerHTML=""
+// ABRIR / FECHAR CARRINHO
+carrinhoBtn.onclick = () => {
+  carrinhoSidebar.classList.add("ativo");
+};
 
-lista.forEach(p=>{
-produtosDiv.innerHTML+=`
-<div class="card">
-<img src="${p.imagem}">
-<h3>${p.nome}</h3>
-<p>R$ ${p.preco}</p>
-<button onclick="addCarrinho('${p.nome}',${p.preco})">
-Adicionar
-</button>
-</div>
-`
-})
+fecharCarrinho.onclick = () => {
+  carrinhoSidebar.classList.remove("ativo");
+};
+
+// BUSCAR PRODUTOS
+async function carregarProdutos() {
+  try {
+    const res = await fetch(`${API_URL}/produtos`);
+    const produtos = await res.json();
+
+    produtosContainer.innerHTML = "";
+
+    produtos.forEach(prod => {
+      const div = document.createElement("div");
+      div.classList.add("produto");
+
+      div.innerHTML = `
+        <img src="${prod.imagem}" />
+        <h3>${prod.nome}</h3>
+        <p>R$ ${prod.preco.toFixed(2)}</p>
+        <button onclick='adicionarCarrinho(${JSON.stringify(prod)})'>
+          Adicionar
+        </button>
+      `;
+
+      produtosContainer.appendChild(div);
+    });
+
+  } catch (err) {
+    produtosContainer.innerHTML = "<p>Erro ao carregar produtos 😢</p>";
+    console.error(err);
+  }
 }
 
-function abrirCarrinho(){
-document.getElementById("carrinho").classList.toggle("ativo")
+// ADICIONAR AO CARRINHO
+function adicionarCarrinho(produto) {
+  const item = carrinho.find(p => p.nome === produto.nome);
+
+  if (item) {
+    item.qtd++;
+  } else {
+    carrinho.push({ ...produto, qtd: 1 });
+  }
+
+  atualizarCarrinho();
+
+  // animação botão (efeito pulo)
+  event.target.style.transform = "scale(1.2)";
+  setTimeout(() => {
+    event.target.style.transform = "scale(1)";
+  }, 200);
 }
 
-function addCarrinho(nome,preco){
+// ATUALIZAR CARRINHO
+function atualizarCarrinho() {
+  carrinhoItens.innerHTML = "";
+  let total = 0;
+  let totalItens = 0;
 
-let item = carrinho.find(p=>p.nome==nome)
+  carrinho.forEach((item, index) => {
+    total += item.preco * item.qtd;
+    totalItens += item.qtd;
 
-if(item){
-item.qtd++
-}else{
-carrinho.push({nome,preco,qtd:1})
+    const div = document.createElement("div");
+    div.classList.add("item-carrinho");
+
+    div.innerHTML = `
+      <p>${item.nome}</p>
+      <p>R$ ${item.preco.toFixed(2)}</p>
+      <div>
+        <button onclick="diminuirQtd(${index})">-</button>
+        <span>${item.qtd}</span>
+        <button onclick="aumentarQtd(${index})">+</button>
+      </div>
+    `;
+
+    carrinhoItens.appendChild(div);
+  });
+
+  totalEl.innerText = total.toFixed(2);
+  contadorCarrinho.innerText = totalItens;
 }
 
-localStorage.setItem("carrinho",JSON.stringify(carrinho))
-
-mostrarAlerta()
-renderCarrinho()
+// AUMENTAR
+function aumentarQtd(index) {
+  carrinho[index].qtd++;
+  atualizarCarrinho();
 }
 
-function mostrarAlerta(){
-let alerta=document.getElementById("alerta")
-alerta.style.display="block"
+// DIMINUIR
+function diminuirQtd(index) {
+  carrinho[index].qtd--;
 
-setTimeout(()=>{
-alerta.style.display="none"
-},1500)
+  if (carrinho[index].qtd <= 0) {
+    carrinho.splice(index, 1);
+  }
+
+  atualizarCarrinho();
 }
 
-function removerItem(index){
-carrinho.splice(index,1)
-localStorage.setItem("carrinho",JSON.stringify(carrinho))
-renderCarrinho()
+// FINALIZAR PEDIDO (WHATSAPP)
+function finalizarPedido() {
+  if (carrinho.length === 0) {
+    alert("Carrinho vazio!");
+    return;
+  }
+
+  let mensagem = "🛍️ Pedido:\n\n";
+
+  carrinho.forEach(item => {
+    mensagem += `${item.nome} x${item.qtd} - R$ ${item.preco}\n`;
+  });
+
+  mensagem += "\nTotal: R$ " + totalEl.innerText;
+
+  const numero = "5511957110772"; // coloque seu número
+  const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
+
+  window.open(url, "_blank");
 }
 
-function renderCarrinho(){
-
-let lista=document.getElementById("listaCarrinho")
-lista.innerHTML=""
-
-let total=0
-let totalItens=0
-
-carrinho.forEach((p,i)=>{
-lista.innerHTML+=`
-<p>
-${p.nome} x${p.qtd} - R$ ${p.preco}
-<button onclick="removerItem(${i})">❌</button>
-</p>
-`
-total+=p.preco*p.qtd
-totalItens+=p.qtd
-})
-
-document.getElementById("total").innerText="Total: R$ "+total
-document.getElementById("contador").innerText=totalItens
-}
-
-function irCheckout(){
-window.location.href="checkout.html"
-}
+// INICIAR
+carregarProdutos();
