@@ -3,7 +3,7 @@ const produtosDiv = document.getElementById("produtos")
 let produtos = []
 let carrinho = JSON.parse(localStorage.getItem("carrinho")) || []
 
-fetch("http://localhost:3000/produtos")
+fetch("https://loja-backend-ias9.onrender.com/produtos")
 .then(res=>res.json())
 .then(data=>{
 produtos=data
